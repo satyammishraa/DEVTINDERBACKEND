@@ -1,8 +1,4 @@
-const Razorpay = require("razorpay");
+// Razorpay disabled for now
+// Exporting empty object so imports don't break
 
-var instance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
-module.exports = instance;
+module.exports = {};
