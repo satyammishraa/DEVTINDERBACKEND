@@ -13,8 +13,16 @@ const getSecretRoomId = (userId, targetUserId) => {
 const initializeSocket = (server) => {
   const io = socket(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: [
+        "http://localhost:5173",
+        process.env.FRONTEND_URL, // For Vercel
+      ],
+      credentials: true,
     },
+    transports: ["websocket"],
+
+    // IMPORTANT: Match frontend path
+    path: "/api/socket.io",
   });
 
   io.on("connection", (socket) => {
@@ -27,12 +35,9 @@ const initializeSocket = (server) => {
     socket.on(
       "sendMessage",
       async ({ firstName, lastName, userId, targetUserId, text }) => {
-        // Save messages to the database
         try {
           const roomId = getSecretRoomId(userId, targetUserId);
           console.log(firstName + " " + text);
-
-          // TODO: Check if userId & targetUserId are friends
 
           let chat = await Chat.findOne({
             participants: { $all: [userId, targetUserId] },
@@ -51,6 +56,7 @@ const initializeSocket = (server) => {
           });
 
           await chat.save();
+
           io.to(roomId).emit("messageReceived", { firstName, lastName, text });
         } catch (err) {
           console.log(err);
