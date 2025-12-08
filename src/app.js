@@ -9,8 +9,10 @@ require("./utils/cronjob");
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://devtinderfrontendnew.vercel.app",
   "https://devtinderfrontendnew1.vercel.app",
 ];
+
 
 app.use(
   cors({
